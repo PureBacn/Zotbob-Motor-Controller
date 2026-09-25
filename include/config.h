@@ -7,3 +7,6 @@
 #define RightEN 0
 #define RightLPWM 15
 #define RightRPWM 14
+
+#define EncLeftA 2
+#define EncLeftB 3
