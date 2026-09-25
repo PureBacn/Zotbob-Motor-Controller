@@ -1,15 +1,30 @@
 #include <Arduino.h>
 #include "config.h"
 
-void setup() {
-	Serial.begin(115200);
-	pinMode(LED_BUILTIN, OUTPUT);
-}
+volatile int leftEncoderP = 0;
 
-void loop() {
+void readEncoder() {
 	int stateA = digitalReadFast(EncLeftA);
 	int stateB = digitalReadFast(EncLeftB);
 
-	Serial.println("A: " + String(stateA) + ", B: " + String(stateB));
+	if (stateA == stateB) {
+		leftEncoderP++;
+	} else {
+		leftEncoderP--;
+	}
+}
+
+void setup() {
+	Serial.begin(115200);
+	pinMode(LED_BUILTIN, OUTPUT);
+	attachInterrupt(digitalPinToInterrupt(EncLeftA), readEncoder, CHANGE);
+}
+
+void loop() {
+	noInterrupts();
+	int leftP = leftEncoderP;
+	interrupts();
+
+	Serial.println("Pos:" + String(leftP));
 	delay(10);
 }
